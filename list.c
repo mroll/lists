@@ -4,6 +4,7 @@
 #include "list.h"
 
 
+
 void list_delete(node *head) {
 	node *p, *x;
 
