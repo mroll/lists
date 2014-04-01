@@ -34,7 +34,7 @@ int nodecmp(intlist *a, intlist *b) {
 int main() {
 	intlist **tmp;
 	node *p = NULL;
-	intlist *test;
+	intlist *store;
 	intlist *a = create(1);
 	intlist *b = create(2);
 	intlist *c = create(3);
@@ -43,17 +43,39 @@ int main() {
 	intlist *f = create(8);
 	
 
-	p = priority_insert(p, (node *)b);
-	p = priority_insert(p, (node *)d);
-	p = priority_insert(p, (node *)e);
-	p = priority_insert(p, (node *)a);
-	p = priority_insert(p, (node *)f);
-	p = priority_insert(p, (node *)c);
-	//p = delete(p, (node *)f, NULL);
+	p = qpush(p, (node *)b);
+	p = qpush(p, (node *)d);
+	p = qpush(p, (node *)e);
+	p = qpush(p, (node *)a);
+	p = qpush(p, (node *)f);
+	p = qpush(p, (node *)c);
 
-	test = (intlist *)list_search(p, (node *)b, (list_node_cmp)nodecmp);
-	printf("%d\n", test->data);
-	//iterate((node *)p, (iterate_callback)print_node_data);
+	printf("list before delete: \n");
+	list_iterate((node *)p, (list_iterate_callback)print_node_data);
+	p = qpop(p, (node **)&store);
+	printf("list after delete: \n");
+	list_iterate((node *)p, (list_iterate_callback)print_node_data);
+	printf("stored node: %d\n", store->data);
+	p = qpop(p, (node **)&store);
+	printf("list after delete: \n");
+	list_iterate((node *)p, (list_iterate_callback)print_node_data);
+	printf("stored node: %d\n", store->data);
+	p = qpop(p, (node **)&store);
+	printf("list after delete: \n");
+	list_iterate((node *)p, (list_iterate_callback)print_node_data);
+	printf("stored node: %d\n", store->data);
+	p = qpop(p, (node **)&store);
+	printf("list after delete: \n");
+	list_iterate((node *)p, (list_iterate_callback)print_node_data);
+	printf("stored node: %d\n", store->data);
+	p = qpop(p, (node **)&store);
+	printf("list after delete: \n");
+	list_iterate((node *)p, (list_iterate_callback)print_node_data);
+	printf("stored node: %d\n", store->data);
+	p = qpop(p, (node **)&store);
+	printf("list after delete: \n");
+	list_iterate((node *)p, (list_iterate_callback)print_node_data);
+	printf("stored node: %d\n", store->data);
 
 	return 0;
 }

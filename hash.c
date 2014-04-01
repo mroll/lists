@@ -35,4 +35,3 @@ node* hashtab_get(HashTab *tab, node *n) {
 	
 	return list_search(tab->table[h], n, tab->cmp); 
 }
-
