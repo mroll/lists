@@ -4,7 +4,7 @@
 #include "list.h"
 #include "hash.h"
 
-//Jenkins test comment3
+//Jenkins test comment4
 
 HashTab* hashtab_init(int width, int nsize, HashFunc hash, HashCmp cmp) {
 	HashTab *tab = (HashTab *)malloc(sizeof(HashTab));
