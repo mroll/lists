@@ -75,16 +75,21 @@ int main() {
 	intlist *f = create(21);
 	HashTab *htable = hashtab_init(10, sizeof(intlist), (hash_func)inthash, (cmp_func)intcmp);
 	
-	ashtab_set(htable, (node *)a);
+	hashtab_set(htable, (node *)a);
 	hashtab_set(htable, (node *)b);
 	hashtab_set(htable, (node *)c);
 	hashtab_set(htable, (node *)d);
 	hashtab_set(htable, (node *)e);
 	hashtab_set(htable, (node *)f);
-	hash_debug(htable);
+    hash_debug(htable);
+
 	free(a);
-	printf("%p\n", a);
-	hash_debug(htable);
+	free(b);
+	free(c);
+	free(d);
+	free(e);
+	free(f);
+	free(htable);
 	
 	return 0;
 }	

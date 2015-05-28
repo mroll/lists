@@ -10,6 +10,9 @@ HashTab* hashtab_init(int width, int nsize, HashFunc hash, HashCmp cmp) {
 	HashTab *tab = (HashTab *)malloc(sizeof(HashTab));
 	tab->width = width;
 	tab->table = (node **)malloc(width * sizeof(node *));
+
+    memset(tab->table, 0, (width * sizeof(node *)));
+
 	tab->nsize = nsize;
 	tab->hash = hash;
 	tab->cmp = cmp;
@@ -19,7 +22,7 @@ HashTab* hashtab_init(int width, int nsize, HashFunc hash, HashCmp cmp) {
 node* hashtab_set(HashTab *tab, node *n) {
 	node *found;
 	int h = tab->hash(n) % tab->width;
-	printf("%p %d\n", n, h);
+	// printf("%p %d\n", n, h);
 
 	if( (found = list_search(tab->table[h], n, tab->cmp)) != NULL)  {
 		memcpy(found, n, tab->nsize);

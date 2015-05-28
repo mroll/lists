@@ -1,148 +1,183 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "list.h"
 
 
-void list_delete(node *head) {
-	node *p, *x;
+void l_delete(node *head) {
+    node *p, *x;
 
-	for(p=head; p != NULL; ) {
-		x = p->next;
-		free(p);
-		p = x;
-	}
+    for(p=head; p != NULL; ) {
+        x = p->next;
+        free(p);
+        p = x;
+    }
 }
 
-node* list_insert(node *head, node *pos, node *new) {
-	node *p, *prev = NULL;
+node* l_insert(node *head, node *pos, node *new) {
+    node *p, *prev = NULL;
 
-	for(p=head; p != pos; p=p->next) {
-		prev = p;
-	}
+    for(p=head; p != pos; p=p->next) {
+        prev = p;
+    }
 
-	if(prev == NULL) {
-		new->next = head;
-		return new;
-	}
+    if(prev == NULL) {
+        new->next = head;
+        return new;
+    }
 
-	prev->next = new;
-	new->next = pos;
-	return head;
-}
-
-
-node* list_search(node *head, node *target, list_node_cmp cmp) {
-	node *p;
-
-	for(p=head; p!=NULL; p=p->next) {
-		if(cmp(p, target) == 0) { break; }
-	}
-
-	return p;
-}
-
-node* node_delete(node *head, node *target, node **store) {		//does not free deleted node. 
-	node *p, *prev = NULL;
-
-	if(head == NULL) {
-		return NULL;
-	}
-
-	if(head == target) {
-		*store = head;
-		p = head->next;
-		head->next = NULL;
-		return p;
-	}
-
-	if(head->next == NULL && target == NULL) { 			//one item in queue
-		*store = head;
-		return NULL;
-	}
-
-	for(p=head; p->next!=target; p=p->next) {
-		prev = p;
-	}
-
-	if(target == NULL) {
-		if(*store != NULL) {
-			*store = p;
-		}
-		prev->next = NULL;
-		return head;
-	} else {
-			if(*store != NULL) {
-				*store = p;
-			}
-		p->next = p->next->next;
-	}
-
-	if(prev->next == NULL) {
-		*store = head;
-	}
-
-	//free(p);
-	return head;
+    prev->next = new;
+    new->next = pos;
+    return head;
 }
 
 
-void list_iterate(node *head, void (*func)(node *) ) {
-	node *p, *tmp;
+node* l_search(node *head, node *target, l_node_cmp cmp) {
+    node *p;
 
-	p = head;
-	while(p!=NULL) {
-		tmp = p->next;
-		func(p);
-		p = tmp;
-	}
-	/**
-	for(p=head; p!=NULL; p=p->next) {
-		func(p);
-	}
-**/
+    for(p=head; p!=NULL; p=p->next) {
+        if(cmp(p, target) == 0) { break; }
+    }
+
+    return p;
 }
 
-node* list_push(node *head, node *new) {
-	return list_insert(head, head, new);
+node* node_delete(node *head, node *target, node **store) {        //does not free deleted node. 
+    node *p, *prev = NULL;
+
+    if(head == NULL) {
+        return NULL;
+    }
+
+    if(head == target) {
+        *store = head;
+        p = head->next;
+        head->next = NULL;
+        return p;
+    }
+
+    if(head->next == NULL && target == NULL) {             //one item in queue
+        *store = head;
+        return NULL;
+    }
+
+    for(p=head; p->next!=target; p=p->next) {
+        prev = p;
+    }
+
+    if(target == NULL) {
+        if(*store != NULL) {
+            printf("p->data: %p\n", p);
+            *store = p;
+        }
+        prev->next = NULL;
+        return head;
+    } else {
+            if(*store != NULL) {
+                *store = p;
+            }
+        p->next = p->next->next;
+    }
+
+    if(prev->next == NULL) {
+        *store = head;
+    }
+
+    //free(p);
+    return head;
 }
 
-node* list_pop(node **head) {
-	node *tmp;
-	tmp = *head;
-	*head = node_delete(*head, *head, NULL);
-	tmp->next = NULL;
-	return tmp;
+
+void l_iterate(node *head, void (*func)(node *) ) {
+    node *p, *tmp;
+
+    p = head;
+    while(p!=NULL) {
+        tmp = p->next;
+        func(p);
+        p = tmp;
+    }
+    /**
+    for(p=head; p!=NULL; p=p->next) {
+        func(p);
+    }
+    **/
+}
+
+int len(node *head) {
+    int nodes = 0;
+
+    node *p = head;
+    while (p) {
+        nodes += 1;
+        p = p->next;
+    }
+
+    return nodes;
+}
+
+node* l_push(node *head, node *new) {
+    return l_insert(head, head, new);
+}
+
+node* l_pop(node **head) {
+    node *tmp;
+    tmp = *head;
+    *head = node_delete(*head, *head, NULL);
+    tmp->next = NULL;
+    return tmp;
 }
 
 node* qpush(node *head, node *new) {
-	return list_insert(head, head, new);
+    return l_insert(head, head, new);
 }
 
 node* qpop(node *head, node **end) {
-	return node_delete(head, NULL, end); 
+    return node_delete(head, NULL, end); 
 }
 
-/**
-node* priority_insert(node *head, node *new) {
-	node *p = head;
+node* reverse(node *head) {
+    node *new_head = NULL, *old_head = head, *tmp;
 
-	while(p!=NULL && nodecmp(new, p) >= 0) {
-		p = p->next;
-	}
+    while (old_head) {
+        tmp = new_head;
+        new_head = old_head;
+        old_head = old_head->next;
+        new_head->next = tmp;
+    }
 
-	head = list_insert(head, p, new);
-	return head;
+    return new_head;
 }
-**/
-		
 
-/**-------------------------------------------------------------------------------**/
-/**-------------------------------------------------------------------------------**/
+node* l_filter(node *head, int (^fblock)(void *)) {
+    node *fnodes = (node *) malloc(sizeof(head) * MAX_NODES);
 
-//stack api
-//queue api
-//priority queue api w/ insert func taking pointer to cmparison
-//comparison func takes pointer to a and b and returns int(-1, 0, 1)
+    node *np = head;
+    while (np) {
+        if (fblock((node *)np)) {
+            node *np_cpy = (node *) malloc(sizeof(node));
+            memcpy(np_cpy, (node *)np, sizeof(*np));
+            l_insert(fnodes, 0, np_cpy);
+        }
+        np = np->next;
+    }
 
+    return fnodes;
+}
 
+double l_reduce(node *head, double (^rblock)(void *)) {
+    double result = 0;
+
+    node *np = head;
+    while (np) {
+        result += rblock((node *) np);
+        np = np->next;
+    }
+
+    return result;
+}
+
+void l_map(node *head, void (^mblock)(void *)) {
+    node *np = head;
+    while (np) {
+        mblock((node *) np);
+        np = np->next;
+    }
+}
