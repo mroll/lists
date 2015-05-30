@@ -18,15 +18,36 @@ node* l_insert(node *head, node *pos, node *new) {
         prev = p;
     }
 
-    if(prev == NULL) {
+    if (prev == NULL) {
         new->next = head;
-        return new;
+        head = new;
+        return head;
     }
 
     prev->next = new;
-    new->next = pos;
+    new->next = p;
+
     return head;
 }
+
+/*node** l_insert(node **head, node *pos, node *new) {*/
+    /*node *p, *prev = NULL;*/
+
+    /*for(p=*head; p!=pos; p=p->next) {*/
+        /*prev = p;*/
+    /*}*/
+
+    /*if(prev == NULL) {*/
+        /*new->next = head;*/
+        /*return new;*/
+    /*}*/
+
+    /*prev->next = new;*/
+    /*new->next = pos;*/
+
+    /**head = new;*/
+    /*return head;*/
+/*}*/
 
 
 node* l_search(node *head, node *target, l_node_cmp cmp) {
@@ -50,7 +71,7 @@ node* node_delete(node *head, node *target, node **store) {        //does not fr
         *store = head;
         p = head->next;
         head->next = NULL;
-        return p;
+        return head;
     }
 
     if(head->next == NULL && target == NULL) {             //one item in queue
@@ -117,12 +138,14 @@ node* l_push(node *head, node *new) {
     return l_insert(head, head, new);
 }
 
-node* l_pop(node **head) {
+node* l_pop(node *head) {
     node *tmp;
-    tmp = *head;
-    *head = node_delete(*head, *head, NULL);
+    tmp = head;
+    head = node_delete(head, head, NULL);
     tmp->next = NULL;
-    return tmp;
+    head = tmp;
+
+    return head;
 }
 
 node* qpush(node *head, node *new) {
@@ -133,33 +156,41 @@ node* qpop(node *head, node **end) {
     return node_delete(head, NULL, end); 
 }
 
-node* reverse(node *head) {
-    node *new_head = NULL, *old_head = head, *tmp;
+node* l_reverse(node *head) {
+    node *old_head = head, *tmp;
 
+    node *np;
     while (old_head) {
-        tmp = new_head;
-        new_head = old_head;
+        tmp = np;
+        np = old_head;
         old_head = old_head->next;
-        new_head->next = tmp;
+        np->next = tmp;
     }
 
-    return new_head;
+    return np;
 }
 
-node* l_filter(node *head, int (^fblock)(void *)) {
-    node *fnodes = (node *) malloc(sizeof(head) * MAX_NODES);
+node* l_filter(node *head, node* (*node_cpy)(node *), int (^fblock)(void *)) {
+    node *current = head;
+    node *newlist = NULL;
+    node *tail = NULL;
 
-    node *np = head;
-    while (np) {
-        if (fblock((node *)np)) {
-            node *np_cpy = (node *) malloc(sizeof(node));
-            memcpy(np_cpy, (node *)np, sizeof(*np));
-            l_insert(fnodes, 0, np_cpy);
+    while (current != NULL) {
+        if (fblock(current)) {
+            if (newlist == NULL) {
+                newlist = node_cpy(current);
+                newlist->next = NULL;
+                tail = newlist;
+            } else {
+                tail->next = node_cpy(current);
+                tail = tail->next;
+                tail->next = NULL;
+            }
         }
-        np = np->next;
+        current = current->next;
     }
 
-    return fnodes;
+    return newlist;
 }
 
 double l_reduce(node *head, double (^rblock)(void *)) {
