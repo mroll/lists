@@ -205,10 +205,25 @@ double l_reduce(node *head, double (^rblock)(void *)) {
     return result;
 }
 
-void l_map(node *head, void (^mblock)(void *)) {
+void* l_map(node *head, void* (^mblock)(void *)) {
+    void *m_list;
+
     node *np = head;
     while (np) {
-        mblock((node *) np);
+        node *mapped = mblock(np);
+        l_insert(m_list, NULL, mapped);
         np = np->next;
+    }
+
+    return m_list;
+}
+
+void l_apply(node *head, void* (^ablock)(void *)) {
+    node *np = head;
+    node *tmp;
+    while (np) {
+        tmp = np->next;
+        ablock(np);
+        np = tmp;
     }
 }

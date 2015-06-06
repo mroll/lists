@@ -10,7 +10,8 @@ typedef struct _node {
 
 typedef double (^l_reduce_block)(void*);
 typedef int (^l_filter_block)(void*);
-typedef void (^l_map_block)(void*);
+typedef void* (^l_map_block)(void*);
+typedef void* (^l_apply_block)(void*);
 
 typedef void (*l_iterate_callback)(node *);
 typedef int (*l_node_cmp)(node *, node *);
@@ -28,4 +29,5 @@ extern node* l_reverse(node *head);
 extern int len(node *head);
 extern node* l_filter(node *head, node* (*node_cpy)(node *), int (^fblock)(void *));
 extern double l_reduce(node *head, double (^rblock)(void *));
-extern void l_map(node *head, void (^mblock)(void *));
+extern void* l_map(node *head, void* (^mblock)(void *));
+extern void l_apply(node *head, void* (^ablock)(void *));

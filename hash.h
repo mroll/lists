@@ -13,9 +13,6 @@ typedef struct _HashTab {
 } HashTab;
 
 extern HashTab* hashtab_init(int width, int nsize, HashFunc hash, HashCmp cmp);
-
 extern node* hashtab_set(HashTab *tab, node *n);
-
 extern node* hashtab_get(HashTab *tab, node *n);
-
 extern void hash_debug(HashTab *tab);
